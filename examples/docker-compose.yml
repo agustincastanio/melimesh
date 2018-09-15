@@ -1,0 +1,47 @@
+version: '2'
+services:
+
+  front-envoy:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontenvoy
+    volumes:
+      - ./front-envoy.yaml:/etc/front-envoy.yaml
+    networks:
+      - envoymesh
+    expose:
+      - "80"
+      - "9901"
+    ports:
+      - "8000:80"
+      - "9901:9901"
+
+  mongo:
+    container_name: mongo
+    networks:
+      envoymesh:
+        aliases:
+          - mongo
+    image: mongo
+    expose:
+      - "3000"
+    ports:
+      - "27017:27017"
+
+  cds:
+    build:
+      context: ../
+      dockerfile: examples/Dockerfile-cds
+    networks:
+      envoymesh:
+        aliases:
+          - cds
+    expose:
+      - "3000"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+
+networks:
+  envoymesh: {}

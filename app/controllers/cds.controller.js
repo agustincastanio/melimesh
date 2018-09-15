@@ -2,7 +2,7 @@ const Cluster = require('../models/cluster.model.js');
 
 // Retrieve and return all clusters from the database.
 exports.findAll = (req, res) => {
-    Cluster.find({},'-_id')
+    Cluster.find({},'-_id -__v -updatedAt -createdAt')
     .then(clusters => {
         res.send({
             "version_info": "0",
